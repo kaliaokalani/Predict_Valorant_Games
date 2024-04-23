@@ -1,6 +1,6 @@
 import pandas as pd
 import requests as requests
-from bs4 import BeautifulSoup 
+from bs4 import BeautifulSoup
 
 urls = [
     "https://www.vlr.gg/297256/t1-vs-paper-rex-champions-tour-2024-pacific-kickoff-playoffs-sf"
