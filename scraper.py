@@ -17,6 +17,7 @@ for url in urls:
         # Extract data from the current URL
         
         team_names = [team.text.strip() for team in soup.find_all('div', class_='wf-title-med')]
+        map_name = [map.text.strip().split('\t')[0] for map in soup.find_all('div', class_='map') [0]]
         agents_played = [agent.text.strip() for agent in soup.find_all('div', class_='vm-stats-game')]
         map_results = [result.text.strip() for result in soup.find_all('div', class_='map-score')]
         economy_ratings = [rating.text.strip() for rating in soup.find_all('div', class_='economy-score')]
@@ -24,6 +25,7 @@ for url in urls:
         # Create a dictionary to store all the data
         url_data = {
             "Team Names": team_names,
+            "Map Played": map_name,
             "Agents Played": agents_played,
             "Map Results": map_results,
             "Economy Ratings": economy_ratings
