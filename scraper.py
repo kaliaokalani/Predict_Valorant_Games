@@ -1,6 +1,7 @@
 import pandas as pd
 import requests as requests
 from bs4 import BeautifulSoup
+import csv
 
 urls = [
     "https://www.vlr.gg/303087/evil-geniuses-vs-loud-champions-tour-2024-americas-kickoff-sf/?game=160718&tab=overview",
@@ -27,29 +28,28 @@ for url in urls:
         # Extract data from the current URL
         
         team_names = [team.text.strip() for team in soup.find_all('div', class_='wf-title-med')]
-        map_name = [map.text.strip().split('\t')[0] for map in soup.find_all('div', class_='map') [0]]
-        agent_names = [a.find('img').get('alt') for a in soup.find_all("span", {"class": "stats-sq mod-agent small"}) if a.find('img') ]
+        map_name = [map.text.strip().split('\t')[0] for map in soup.find_all('div', class_='map')]
+        agent_names = [a.find('img').get('alt') for a in soup.find_all("span", {"class": "stats-sq mod-agent small"}) if a.find('img')]
+        map_results = [result.text.strip().split('\t')[0] for result in soup.find('div', class_='score')]
+        economy_ratings = [rating.text.strip() for rating in soup.find_all('div', class_='wf-table-inset mod-econ')]
 
-        map_results = [result.text.strip().split('\t')[0] for result in soup.find_all('div', class_='score')]
-        economy_ratings = [rating.text.strip() for rating in soup.find_all('div', class_='economy-score')]
-
-
-        # Create a dictionary to store all the data
-        url_data = {
-            "Team Names": team_names,
-            "Map Played": map_name,
-            "Agents Played": agent_names,
-            "Map Results": map_results,
-            "Economy Ratings": economy_ratings
-        }
+        # Create a list to store all the data
+        url_data = [
+            team_names,
+            map_name,
+            agent_names,
+            map_results,
+            economy_ratings
+        ]
 
         # Append the dictionary to the list
         all_data.append(url_data)
     else:
         print(f"Failed to retrieve the data from {url}")
 
-# Convert the list of dictionaries to a Pandas DataFrame
-df = pd.DataFrame(all_data)
-
-# Display
-print(df)
+# Save Data to a CSV File
+with open ('data.csv', 'w', newline='', encoding='utf-8') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['Team Names', 'Map Played', 'Agents Played', 'Map Results', 'Economy Rating'])
+    for data_row in all_data:
+        writer.writerow(data_row)
